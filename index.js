@@ -4,12 +4,6 @@
  * It will automatically create/update the pipeline whenever invoked
  * (through a GitHub Action).
  * 
- * Inputs from user:
- * 
- * - url: URL to connect to Appbaseio's instance and handle creating/updating
- *        the pipeline
- * - pipeline_id: Pipeline ID for the current pipeline. If not passed, will be
- *                set to {{org-repo}}. (Optional)
  */
 
 
@@ -18,11 +12,14 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 try {
-    // `who-to-greet` input defined in action metadata file
+    /**
+     * The user is expected to pass a few things in input:
+     * 
+     * - url: URL to connect to appbaseio (required)
+     * - pipeline_id: Pipeline ID for the current pipeline (not required)
+     * 
+     */
     const appbaseURL = core.getInput('url');
-
-    // TODO: Verify the URL is valid
-
 } catch (error) {
     core.setFailed(error.message);
 }
