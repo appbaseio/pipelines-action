@@ -1,0 +1,9 @@
+name: 'Appbase Pipeline'
+description: "Deploy Appbase.io's pipelines from GitHub repos"
+inputs:
+  url:
+    description: "URL to connect to Appbase.io cluster"
+    required: true
+runs:
+  using: 'node16'
+  main: 'index.js'
