@@ -1,0 +1,12 @@
+{
+  "name": "pipeline-action",
+  "version": "1.0.0",
+  "description": "GitHub action for Appbase's Pipeline feature",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "deepjyoti30",
+  "license": "MIT"
+}
