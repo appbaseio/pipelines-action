@@ -4,6 +4,10 @@ inputs:
   url:
     description: "URL to connect to Appbase.io cluster"
     required: true
+  pipeline_id:
+    description: "Pipeline ID for the current pipeline"
+    required: false
+    default: ${{github.repository}}
 runs:
   using: 'node16'
   main: 'index.js'
