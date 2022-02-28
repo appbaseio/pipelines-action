@@ -11,6 +11,9 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
+// Import local modules
+const util = require("./src/util")
+
 try {
     /**
      * The user is expected to pass a few things in input:
@@ -20,7 +23,11 @@ try {
      * 
      */
     const appbaseURL = core.getInput('url');
-    const pipelineID = core.getInput('pipeline_id');
+    const origPipelineID = core.getInput('pipeline_id');
+
+    // Clean the pipeline ID to make it usable
+    var pipelineID = util.cleanPipelineID(origPipelineID)
+
     console.log(appbaseURL);
     console.log(pipelineID);
 } catch (error) {
