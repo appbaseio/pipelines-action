@@ -42,7 +42,19 @@ module.exports = {
         // Validate the files
         this.validateFiles(pipeline_file, pipeDepends)
 
+        // TODO: Add the pipeline ID in the pipeline file
+
         const form = new FormData()
+
+        // Add the pipeline file
+        form.append("pipeline", fs.createReadStream(pipeline_file))
+
+        // Add the dependencies if any
+        Object.keys(pipeDepends).forEach(key => {
+            form.append(key, fs.createReadStream(pipeDepends[key]))
+        })
+
+        // Return the form
         return form
     },
     validateFiles: function (pipeline_file, pipelineDependencies) {
