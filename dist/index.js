@@ -10210,48 +10210,54 @@ const util = __nccwpck_require__(9695)
 const pipeline = __nccwpck_require__(4488)
 const file = __nccwpck_require__(1654)
 
-try {
-    /**
-     * The user is expected to pass a few things in input:
-     * 
-     * - url: URL to connect to appbaseio (required)
-     * - pipeline_id: Pipeline ID for the current pipeline (not required)
-     * 
-     */
-    const appbaseURL = core.getInput('url');
-    const origPipelineID = core.getInput('pipeline_id');
-    const pipelineFile = core.getInput("file");
-    const dependencies = core.getInput("depends");
+async function main() {
+    try {
+        /**
+         * The user is expected to pass a few things in input:
+         * 
+         * - url: URL to connect to appbaseio (required)
+         * - pipeline_id: Pipeline ID for the current pipeline (not required)
+         * 
+         */
+        const appbaseURL = core.getInput('url');
+        const origPipelineID = core.getInput('pipeline_id');
+        const pipelineFile = core.getInput("file");
+        const dependencies = core.getInput("depends");
 
-    // Clean the pipeline ID to make it usable
-    var pipelineID = util.cleanPipelineID(origPipelineID);
+        // Clean the pipeline ID to make it usable
+        var pipelineID = util.cleanPipelineID(origPipelineID);
 
-    // Check what action to do, i:e create or update
-    // We can check this by checking whether the pipeline with the
-    // passed ID is already present or not.
-    const pipelineFetched = pipeline.get(appbaseURL, pipelineID)
+        // Check what action to do, i:e create or update
+        // We can check this by checking whether the pipeline with the
+        // passed ID is already present or not.
+        const pipelineFetched = await pipeline.get(appbaseURL, pipelineID)
 
-    // Update the action accordingly
-    const action = pipelineFetched == null ? 'create' : 'update';
+        // Update the action accordingly
+        const action = pipelineFetched == null ? 'create' : 'update';
 
-    // Generate form data
-    const formData = file.buildFormData(pipelineFile, dependencies, pipelineID)
+        // Generate form data
+        // Thie method will also make sure the `id` field is set to the
+        // one passed by user so that the create works properly!
+        const formData = file.buildFormData(pipelineFile, dependencies, pipelineID)
 
-    switch (action) {
-        case "create":
-            // Create the pipeline
-            pipeline.create(appbaseURL, formData)
-            break
-        case "update":
-            // Update the pipeline
-            pipeline.update(appbaseURL, formData, pipelineID)
-            break
-        default:
-            break
+        switch (action) {
+            case "create":
+                // Create the pipeline
+                await pipeline.create(appbaseURL, formData)
+                break
+            case "update":
+                // Update the pipeline
+                await pipeline.update(appbaseURL, formData, pipelineID)
+                break
+            default:
+                break
+        }
+    } catch (error) {
+        core.setFailed(error.message);
     }
-} catch (error) {
-    core.setFailed(error.message);
 }
+
+main();
 })();
 
 module.exports = __webpack_exports__;
