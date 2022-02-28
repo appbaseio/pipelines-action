@@ -8,6 +8,8 @@
  */
 
 var FormData = require("form-data")
+var fs = require("fs")
+var path = require("path")
 
 module.exports = {
     buildFormData: function (pipeline_file, dependencies, pipeline_id) {
@@ -29,12 +31,15 @@ module.exports = {
          * @returns {FormData} - The generated form data to pass to
          * the API.
          */
+        // Validate the files
+        this.validateFiles(pipeline_file)
+
         const form = new FormData()
         return form
     },
-    verifyFiles: function (pipeline_file) {
+    validateFiles: function (pipeline_file) {
         /**
-         * Verify the passed files to make sure they
+         * Validate the passed files to make sure they
          * follow the standards required by appbase.io's
          * API structure.
          * 
@@ -45,5 +50,11 @@ module.exports = {
          * 
          * @returns {null}
          */
+        // Chcek if pipeline file exists
+        if (!fs.existsSync(pipeline_file)) throw `Invalid pipeline file passed: ${pipeline_file}`
+
+        // Check if pipeline file is an yaml
+        const pipelineExtension = path.extname(pipeline_file)
+        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") throw `Pipeline file should be YAML, got ${pipeline_file}`
     }
 }
