@@ -7,6 +7,8 @@
  * others are passed according to their key.
  */
 
+var FormData = require("form-data")
+
 module.exports = {
     buildFormData: function (pipeline_file, dependencies, pipeline_id) {
         /**
@@ -26,6 +28,22 @@ module.exports = {
          * 
          * @returns {FormData} - The generated form data to pass to
          * the API.
+         */
+        const form = new FormData()
+        return form
+    },
+    verifyFiles: function (pipeline_file) {
+        /**
+         * Verify the passed files to make sure they
+         * follow the standards required by appbase.io's
+         * API structure.
+         * 
+         * This method will throw an exception if any file is
+         * invalid or not present.
+         * 
+         * @param {string} pipeline_file - Path to the pipeline file.
+         * 
+         * @returns {null}
          */
     }
 }
