@@ -10240,9 +10240,11 @@ try {
     switch (action) {
         case "create":
             // Create the pipeline
+            pipeline.create(appbaseURL, formData)
             break
         case "update":
             // Update the pipeline
+            pipeline.update(appbaseURL, formData, pipelineID)
             break
         default:
             break
