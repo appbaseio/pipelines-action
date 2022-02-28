@@ -1,4 +1,3 @@
-id: "appbaseio-pipelines-action-new"                  
 description: "Test pipeline created by GitHub action"
 priority: 1
 routes:
