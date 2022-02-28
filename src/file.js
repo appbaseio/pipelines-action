@@ -12,19 +12,19 @@ var fs = require("fs")
 var path = require("path")
 
 module.exports = {
-    buildFormData: function (pipeline_file, dependencies, pipeline_id) {
+    buildFormData: function (pipelineFile, dependencies, pipelineID) {
         /**
          * Build the formdata based on the passed
          * file data.
          * 
-         * This method will make sure the pipeline_id is
-         * set in the pipeline_file.
+         * This method will make sure the pipelineID is
+         * set in the pipelineFile.
          * 
-         * @param {string} pipeline_file - The main pipeline file
+         * @param {string} pipelineFile - The main pipeline file
          * to pass.
          * @param {string} dependencies - The pipeline dependency
          * files. This will be a stringified array of objects.
-         * @param {string} pipeline_id - The pipeline ID to be set
+         * @param {string} pipelineID - The pipeline ID to be set
          * in the pipeline file. This is optional, if set to `null`
          * will be ignored.
          * 
@@ -40,14 +40,14 @@ module.exports = {
         const pipeDepends = JSON.parse(dependencies)
 
         // Validate the files
-        this.validateFiles(pipeline_file, pipeDepends)
+        this.validateFiles(pipelineFile, pipeDepends)
 
         // TODO: Add the pipeline ID in the pipeline file
 
         const form = new FormData()
 
         // Add the pipeline file
-        form.append("pipeline", fs.createReadStream(pipeline_file))
+        form.append("pipeline", fs.createReadStream(pipelineFile))
 
         // Add the dependencies if any
         Object.keys(pipeDepends).forEach(key => {
@@ -57,7 +57,7 @@ module.exports = {
         // Return the form
         return form
     },
-    validateFiles: function (pipeline_file, pipelineDependencies) {
+    validateFiles: function (pipelineFile, pipelineDependencies) {
         /**
          * Validate the passed files to make sure they
          * follow the standards required by appbase.io's
@@ -66,18 +66,18 @@ module.exports = {
          * This method will throw an exception if any file is
          * invalid or not present.
          * 
-         * @param {string} pipeline_file - Path to the pipeline file.
+         * @param {string} pipelineFile - Path to the pipeline file.
          * @param {Object} pipelineDependencies -  Objects of files
          * referenced in the pipeline file.
          * 
          * @returns {null}
          */
         // Chcek if pipeline file exists
-        if (!fs.existsSync(pipeline_file)) throw `File does not exist: ${pipeline_file}`
+        if (!fs.existsSync(pipelineFile)) throw `File does not exist: ${pipelineFile}`
 
         // Check if pipeline file is an yaml
-        const pipelineExtension = path.extname(pipeline_file)
-        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") throw `Pipeline file should be YAML, got ${pipeline_file}`
+        const pipelineExtension = path.extname(pipelineFile)
+        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") throw `Pipeline file should be YAML, got ${pipelineFile}`
 
         // Validate the pipeline files
         Object.keys(pipelineDependencies).forEach(key => {
