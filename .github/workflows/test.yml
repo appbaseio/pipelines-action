@@ -14,4 +14,3 @@ jobs:
         id: hello
         with:
           url: "https://foo:bar@localhost:8000"
-          pipeline_id: "just_a_pipeline_ID"
