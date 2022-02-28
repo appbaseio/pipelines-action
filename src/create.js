@@ -3,8 +3,10 @@
  * details.
  */
 
+var fetch = require("node-fetch")
+
 module.exports = {
-    createPipeline: function (url, body) {
+    createPipeline: async function (url, body) {
         /**
          * Create the pipeline based on the passed
          * form data. We just need to make a POST
@@ -19,7 +21,9 @@ module.exports = {
          * @param {FormData} body - FormData body to send in the
          * request.
          */
-
-
+        const response = await fetch(url, {
+            method: "POST",
+            body: body,
+        })
     }
 }
