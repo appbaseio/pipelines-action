@@ -13,6 +13,7 @@ const github = require('@actions/github');
 
 // Import local modules
 const util = require("../src/util")
+const pipeline = require("../src/pipeline")
 
 try {
     /**
@@ -26,10 +27,26 @@ try {
     const origPipelineID = core.getInput('pipeline_id');
 
     // Clean the pipeline ID to make it usable
-    var pipelineID = util.cleanPipelineID(origPipelineID)
+    var pipelineID = util.cleanPipelineID(origPipelineID);
 
-    console.log(appbaseURL);
-    console.log(pipelineID);
+    // Check what action to do, i:e create or update
+    // We can check this by checking whether the pipeline with the
+    // passed ID is already present or not.
+    const pipelineFetched = pipeline.get(appbaseURL, pipelineID)
+
+    // Update the action accordingly
+    const action = pipelineFetched == null ? 'create' : 'update';
+
+    switch (action) {
+        case "create":
+            // Create the pipeline
+            break
+        case "update":
+            // Update the pipeline
+            break
+        default:
+            break
+    }
 } catch (error) {
     core.setFailed(error.message);
 }
