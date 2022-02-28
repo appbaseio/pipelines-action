@@ -8367,7 +8367,7 @@ module.exports = {
          * @returns {(Object|null)} - JSON of the response or null if not
          * present. 
          */
-        const URL = `${URL}/_pipeline/${pipelineID}`
+        const URL = `${url}/_pipeline/${pipelineID}`
         const response = await fetch(URL, {
             method: "GET"
         })
