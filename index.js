@@ -20,6 +20,9 @@ try {
      * 
      */
     const appbaseURL = core.getInput('url');
+    const pipelineID = core.getInput('pipeline_id');
+    console.log(appbaseURL);
+    console.log(pipelineID);
 } catch (error) {
     core.setFailed(error.message);
 }
