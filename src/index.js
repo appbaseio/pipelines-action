@@ -14,6 +14,7 @@ const github = require('@actions/github');
 // Import local modules
 const util = require("../src/util")
 const pipeline = require("../src/pipeline")
+const file = require("../src/file")
 
 try {
     /**
@@ -25,6 +26,8 @@ try {
      */
     const appbaseURL = core.getInput('url');
     const origPipelineID = core.getInput('pipeline_id');
+    const pipelineFile = core.getInput("file");
+    const dependencies = core.getInput("depends");
 
     // Clean the pipeline ID to make it usable
     var pipelineID = util.cleanPipelineID(origPipelineID);
@@ -36,6 +39,9 @@ try {
 
     // Update the action accordingly
     const action = pipelineFetched == null ? 'create' : 'update';
+
+    // Generate form data
+    const formData = file.buildFormData(pipelineFile, dependencies, pipelineID)
 
     switch (action) {
         case "create":
