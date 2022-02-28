@@ -31,13 +31,21 @@ module.exports = {
          * @returns {FormData} - The generated form data to pass to
          * the API.
          */
+        // Parse the dependencies string
+        // Below should resolve to an array of objects
+        // where each object is a key value map.
+        //
+        // The key will be the key for the form and the value
+        // will be the path of the dependency file.
+        const pipeDepends = JSON.parse(dependencies)
+
         // Validate the files
-        this.validateFiles(pipeline_file)
+        this.validateFiles(pipeline_file, pipeDepends)
 
         const form = new FormData()
         return form
     },
-    validateFiles: function (pipeline_file) {
+    validateFiles: function (pipeline_file, pipelineDependencies) {
         /**
          * Validate the passed files to make sure they
          * follow the standards required by appbase.io's
@@ -47,14 +55,23 @@ module.exports = {
          * invalid or not present.
          * 
          * @param {string} pipeline_file - Path to the pipeline file.
+         * @param {Array} pipelineDependencies - Array of objects of files
+         * referenced in the pipeline file.
          * 
          * @returns {null}
          */
         // Chcek if pipeline file exists
-        if (!fs.existsSync(pipeline_file)) throw `Invalid pipeline file passed: ${pipeline_file}`
+        if (!fs.existsSync(pipeline_file)) throw `File does not exist: ${pipeline_file}`
 
         // Check if pipeline file is an yaml
         const pipelineExtension = path.extname(pipeline_file)
         if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") throw `Pipeline file should be YAML, got ${pipeline_file}`
+
+        // Validate the pipeline files
+        Object.keys(pipelineDependencies).forEach(key => {
+            // Make sure the file exists
+            const dependencyFile = pipelineDependencies[key]
+            if (!fs.existsSync(dependencyFile)) throw `File does not exist: ${dependencyFile}`
+        })
     }
 }
