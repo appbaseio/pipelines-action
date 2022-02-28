@@ -49,4 +49,27 @@ module.exports = {
             body: body
         })
     },
+    get: async function (url, pipelineID) {
+        /**
+         * Get the pipeline using the passed pipeline ID.
+         * 
+         * If we get a 404, the pipeline will be considered
+         * not present.
+         * 
+         * @param {string} url - URL of the appbase.io instance
+         * @param {string} pipelineID - Pipeline ID to fetch with.
+         * 
+         * @returns {(Object|null)} - JSON of the response or null if not
+         * present. 
+         */
+        const URL = `${URL}/_pipeline/${pipelineID}`
+        const response = await fetch(URL, {
+            method: "GET"
+        })
+
+        if (response.status === 404) return null
+
+        const responseJSON = await response.json()
+        return responseJSON
+    }
 }
