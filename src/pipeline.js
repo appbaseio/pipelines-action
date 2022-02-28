@@ -22,7 +22,8 @@ module.exports = {
          * @param {FormData} body - FormData body to send in the
          * request.
          */
-        const response = await fetch(url, {
+        const URL = `${url}/_pipeline`
+        const response = await fetch(URL, {
             method: "POST",
             body: body,
         })
