@@ -1,4 +1,4 @@
-description: "Test pipeline created by GitHub action"
+description: "New description from GitHub Action"
 priority: 1
 routes:
   - path: "/action/test"
