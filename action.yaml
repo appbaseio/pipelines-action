@@ -14,7 +14,7 @@ inputs:
   depends:
     description: "Pipeline files dependencies, this should be an array of strings"
     required: false
-    default: '[]'
+    default: '{}'
 runs:
   using: 'node16'
   main: 'dist/index.js'

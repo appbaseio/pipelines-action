@@ -14,3 +14,4 @@ jobs:
         id: hello
         with:
           url: "https://foo:bar@localhost:8000"
+          file: "./examples/pipeline.yaml"
