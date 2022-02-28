@@ -12,7 +12,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 // Import local modules
-const util = require("./src/util")
+const util = require("../src/util")
 
 try {
     /**

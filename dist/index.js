@@ -8299,11 +8299,33 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 5786:
+/***/ 9695:
 /***/ ((module) => {
 
-module.exports = eval("require")("./src/util");
+/**
+ * Handle util methods regarding the pipeline
+ * action.
+ */
 
+module.exports = {
+    cleanPipelineID: function (pipelineID) {
+        /**
+         * Clean the pipeline ID to make it
+         * usable as an ID.
+         * 
+         * We will do the following things:
+         * - replace `/` with `-`
+         * - replace ` ` (space) with `_`
+         * 
+         * @param {string} pipelineID - uncleaned pipeline ID
+         * 
+         * @returns {string} - cleaned pipeline ID.
+         */
+        pipelineID = pipelineID.replace(/\//g, "-")
+        pipelineID = pipelineID.replace(/\s/g, "_")
+        return pipelineID
+    }
+}
 
 /***/ }),
 
@@ -8490,7 +8512,7 @@ const core = __nccwpck_require__(9185);
 const github = __nccwpck_require__(5595);
 
 // Import local modules
-const util = __nccwpck_require__(5786)
+const util = __nccwpck_require__(9695)
 
 try {
     /**
