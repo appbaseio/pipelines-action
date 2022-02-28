@@ -1,0 +1,12 @@
+id: "appbaseio-pipelines-action"                  
+description: "Test pipeline created by GitHub action"
+priority: 1
+routes:
+  - path: "/action/test"
+    method: POST
+    classify:
+      category: "search"
+      acl: "search"
+stages:
+  - id: "nana"
+    script: "console.log('nana');"

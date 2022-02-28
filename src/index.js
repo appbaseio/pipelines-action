@@ -41,6 +41,8 @@ try {
     const action = pipelineFetched == null ? 'create' : 'update';
 
     // Generate form data
+    // Thie method will also make sure the `id` field is set to the
+    // one passed by user so that the create works properly!
     const formData = file.buildFormData(pipelineFile, dependencies, pipelineID)
 
     switch (action) {
