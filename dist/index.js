@@ -8299,6 +8299,88 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 4488:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+/**
+ * Handle all methods related to hitting the
+ * pipeline API to create/get/update pipelines
+ * based on the passed data.
+ */
+
+var fetch = __nccwpck_require__(6197)
+
+module.exports = {
+    create: async function (url, body) {
+        /**
+         * Create the pipeline based on the passed
+         * form data. We just need to make a POST
+         * request to the pipeline endpoint to create
+         * the pipeline.
+         * 
+         * The pipeline ID will be picked up from the file
+         * so we need to make sure the pipeline file contains
+         * the proper pipeline ID.
+         * 
+         * @param {string} url - URL to make the request to
+         * @param {FormData} body - FormData body to send in the
+         * request.
+         */
+        const URL = `${url}/_pipeline`
+        const response = await fetch(URL, {
+            method: "POST",
+            body: body,
+        })
+    },
+    update: async function (url, body, pipelineID) {
+        /**
+         * Update the pipeline based on the passed
+         * details.
+         * 
+         * This method will not check if the pipeline exists
+         * with the passed ID. That should be checked in the
+         * parent.
+         * 
+         * We need to send a PUT request to the appbaseio
+         * URL with the pipeline ID and the files.
+         * 
+         * @param {string} url - URL of the appbase.io instance
+         * @param {FormData} body - FormData body to send for update.
+         * @param {string} pipelineID - Pipeline ID to update with.
+         */
+        const URL = `${url}/_pipeline/${pipelineID}`
+        const response = await fetch(URL, {
+            method: "PUT",
+            body: body
+        })
+    },
+    get: async function (url, pipelineID) {
+        /**
+         * Get the pipeline using the passed pipeline ID.
+         * 
+         * If we get a 404, the pipeline will be considered
+         * not present.
+         * 
+         * @param {string} url - URL of the appbase.io instance
+         * @param {string} pipelineID - Pipeline ID to fetch with.
+         * 
+         * @returns {(Object|null)} - JSON of the response or null if not
+         * present. 
+         */
+        const URL = `${URL}/_pipeline/${pipelineID}`
+        const response = await fetch(URL, {
+            method: "GET"
+        })
+
+        if (response.status === 404) return null
+
+        const responseJSON = await response.json()
+        return responseJSON
+    }
+}
+
+/***/ }),
+
 /***/ 9695:
 /***/ ((module) => {
 
@@ -8513,6 +8595,7 @@ const github = __nccwpck_require__(5595);
 
 // Import local modules
 const util = __nccwpck_require__(9695)
+const pipeline = __nccwpck_require__(4488)
 
 try {
     /**
@@ -8526,10 +8609,26 @@ try {
     const origPipelineID = core.getInput('pipeline_id');
 
     // Clean the pipeline ID to make it usable
-    var pipelineID = util.cleanPipelineID(origPipelineID)
+    var pipelineID = util.cleanPipelineID(origPipelineID);
 
-    console.log(appbaseURL);
-    console.log(pipelineID);
+    // Check what action to do, i:e create or update
+    // We can check this by checking whether the pipeline with the
+    // passed ID is already present or not.
+    const pipelineFetched = pipeline.get(appbaseURL, pipelineID)
+
+    // Update the action accordingly
+    const action = pipelineFetched == null ? 'create' : 'update';
+
+    switch (action) {
+        case "create":
+            // Create the pipeline
+            break
+        case "update":
+            // Update the pipeline
+            break
+        default:
+            break
+    }
 } catch (error) {
     core.setFailed(error.message);
 }
