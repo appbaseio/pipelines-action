@@ -10,6 +10,8 @@
 var FormData = require("form-data")
 var fs = require("fs")
 var path = require("path")
+var yaml = require("js-yaml")
+const core = require("@actions/core")
 
 module.exports = {
     buildFormData: function (pipelineFile, dependencies, pipelineID) {
@@ -42,7 +44,8 @@ module.exports = {
         // Validate the files
         this.validateFiles(pipelineFile, pipeDepends)
 
-        // TODO: Add the pipeline ID in the pipeline file
+        // Add the pipeline ID in the pipeline file
+        this.updateFileWithID(pipelineFile, pipelineID)
 
         const form = new FormData()
 
@@ -85,5 +88,38 @@ module.exports = {
             const dependencyFile = pipelineDependencies[key]
             if (!fs.existsSync(dependencyFile)) throw `File does not exist: ${dependencyFile}`
         })
+    },
+    updateFileWithID: function (file, pipelineID) {
+        /**
+         * Update the pipeline ID in the passed file.
+         * 
+         * The `id` will be set at the top level of the file, this
+         * follows the structure followed by appbase.io's pipeline
+         * files.
+         * 
+         * The file should be an YAML, if not an exception
+         * will be thrown.
+         * 
+         * @param {string} file - The file to work on. Should be an YAML file.
+         * @param {string} pipelineID - The pipeline ID to set in the file.
+         */
+        var yamlDoc
+
+        // Read the file
+        try {
+            yamlDoc = yaml.load(fs.readFileSync(file, "utf8"));
+        } catch (error) {
+            core.setFailed(error.message)
+        }
+
+        // Update the ID in the doc
+        yamlDoc.id = pipelineID
+
+        // Write the udpated content
+        try {
+            fs.writeFileSync(file, yaml.dump(yamlDoc))
+        } catch (writeErr) {
+            core.setFailed(writeErr.message)
+        }
     }
 }
