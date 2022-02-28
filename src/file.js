@@ -32,8 +32,8 @@ module.exports = {
          * the API.
          */
         // Parse the dependencies string
-        // Below should resolve to an array of objects
-        // where each object is a key value map.
+        // Below should resolve to an object where the key will
+        // be the reference and the value the path.
         //
         // The key will be the key for the form and the value
         // will be the path of the dependency file.
@@ -55,7 +55,7 @@ module.exports = {
          * invalid or not present.
          * 
          * @param {string} pipeline_file - Path to the pipeline file.
-         * @param {Array} pipelineDependencies - Array of objects of files
+         * @param {Object} pipelineDependencies -  Objects of files
          * referenced in the pipeline file.
          * 
          * @returns {null}
