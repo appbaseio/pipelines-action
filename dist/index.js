@@ -8299,6 +8299,14 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 5786:
+/***/ ((module) => {
+
+module.exports = eval("require")("./src/util");
+
+
+/***/ }),
+
 /***/ 3885:
 /***/ ((module) => {
 
@@ -8481,6 +8489,9 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(9185);
 const github = __nccwpck_require__(5595);
 
+// Import local modules
+const util = __nccwpck_require__(5786)
+
 try {
     /**
      * The user is expected to pass a few things in input:
@@ -8490,7 +8501,11 @@ try {
      * 
      */
     const appbaseURL = core.getInput('url');
-    const pipelineID = core.getInput('pipeline_id');
+    const origPipelineID = core.getInput('pipeline_id');
+
+    // Clean the pipeline ID to make it usable
+    var pipelineID = util.cleanPipelineID(origPipelineID)
+
     console.log(appbaseURL);
     console.log(pipelineID);
 } catch (error) {
