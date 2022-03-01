@@ -49,6 +49,8 @@ module.exports = {
             pipeDepends = this.resolveScriptRefs(scriptRefs, pipelineFile)
         }
 
+        console.log(JSON.stringify(pipeDepends))
+
         // Validate the files
         core.info("Validating passed files...")
         this.validateFiles(pipelineFile, pipeDepends)
