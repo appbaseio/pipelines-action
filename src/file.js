@@ -129,6 +129,8 @@ module.exports = {
             if (!scriptRef.startsWith("./")) {
                 // Else join the pipeline directory to the scriptRef path.
                 resolvedPath = path.join(pipelineDirectory, scriptRef)
+
+                resolvedPath = "./" + resolvedPath
             }
 
             pipeDepends[scriptRef] = resolvedPath
