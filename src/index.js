@@ -65,6 +65,10 @@ async function main() {
             default:
                 break
         }
+
+        // Print a nice message indicating the pipeline was deployed succesfully
+        // and where they can find it.
+
     } catch (error) {
         core.setFailed(error.message);
     }

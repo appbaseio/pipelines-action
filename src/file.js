@@ -123,5 +123,35 @@ module.exports = {
         } catch (writeErr) {
             core.setFailed(writeErr.message)
         }
+    },
+    readPipelineRoutes: function (file) {
+        /**
+         * Read the pipeline routes from the passed pipeline
+         * file and accordingly extract the routes
+         * defined by the user.
+         * 
+         * The passed file should be present, this method will
+         * not validate if the file is present, this should be
+         * done by the parent method.
+         * 
+         * @param {string} file - Path to the pipeline file.
+         * 
+         * @returns {Array} - Array of routes defined by the user.
+         */
+        var yamlDoc
+
+        // Read the file
+        try {
+            yamlDoc = yaml.load(fs.readFileSync(file, "utf8"));
+        } catch (error) {
+            core.setFailed(error.message)
+        }
+
+        var routesDefined = new Array
+        yamlDoc.routes.forEach(route => {
+            routesDefined.push(route.path)
+        })
+
+        return routesDefined
     }
 }
