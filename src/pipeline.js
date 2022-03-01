@@ -37,6 +37,7 @@ module.exports = {
         // Else show warning and raise error
         core.warning(`Create call returned non 201 response: ${response.status}`)
         core.setFailed(`Creating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
+        process.exit(1)
     },
     update: async function (url, body, pipelineID) {
         /**
@@ -68,6 +69,7 @@ module.exports = {
         // Else show warning and raise error
         core.warning(`Update call returned non 200 response: ${response.status}`)
         core.setFailed(`Updating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
+        process.exit(1)
     },
     get: async function (url, pipelineID) {
         /**

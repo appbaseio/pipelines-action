@@ -14073,17 +14073,26 @@ module.exports = {
          * @returns {null}
          */
         // Chcek if pipeline file exists
-        if (!fs.existsSync(pipelineFile)) core.setFailed(`File does not exist: ${pipelineFile}`)
+        if (!fs.existsSync(pipelineFile)) {
+            core.setFailed(`File does not exist: ${pipelineFile}`)
+            process.exit(1)
+        }
 
         // Check if pipeline file is an yaml
         const pipelineExtension = path.extname(pipelineFile)
-        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") core.setFailed(`Pipeline file should be YAML, got ${pipelineFile}`)
+        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") {
+            core.setFailed(`Pipeline file should be YAML, got ${pipelineFile}`)
+            process.exit(1)
+        }
 
         // Validate the pipeline files
         Object.keys(pipelineDependencies).forEach(key => {
             // Make sure the file exists
             const dependencyFile = pipelineDependencies[key]
-            if (!fs.existsSync(dependencyFile)) core.setFailed(`File does not exist: ${dependencyFile}`)
+            if (!fs.existsSync(dependencyFile)) {
+                core.setFailed(`File does not exist: ${dependencyFile}`)
+                process.exit(1)
+            }
         })
     },
     updateFileWithID: function (file, pipelineID) {
@@ -14110,6 +14119,7 @@ module.exports = {
             fs.writeFileSync(file, yaml.dump(yamlDoc))
         } catch (writeErr) {
             core.setFailed(writeErr.message)
+            process.exit(1)
         }
     },
     readPipelineRoutes: function (file) {
@@ -14152,6 +14162,7 @@ module.exports = {
             yamlDoc = yaml.load(fs.readFileSync(file, "utf8"));
         } catch (error) {
             core.setFailed(error.message)
+            process.exit(1)
         }
 
         return yamlDoc
@@ -14202,6 +14213,7 @@ module.exports = {
         // Else show warning and raise error
         core.warning(`Create call returned non 201 response: ${response.status}`)
         core.setFailed(`Creating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
+        process.exit(1)
     },
     update: async function (url, body, pipelineID) {
         /**
@@ -14233,6 +14245,7 @@ module.exports = {
         // Else show warning and raise error
         core.warning(`Update call returned non 200 response: ${response.status}`)
         core.setFailed(`Updating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
+        process.exit(1)
     },
     get: async function (url, pipelineID) {
         /**
