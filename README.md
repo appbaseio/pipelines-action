@@ -6,9 +6,22 @@ GitHub Action to manage an Appbase.io pipeline from a github repository.
 
 This action can be used out of the box to manage a pipeline from a GitHub repository.
 
+**[Get started with pipelines right away using our template repo](https://github.com/appbaseio/pipelines-template)**
+
 Following is an example action.yaml for using the pipeline with default values and a `pipeline.yaml` file in the root of the repository:
 
 ```yaml
+on: [push]
+
+jobs:
+  pipeline_deploy:
+    runs-on: ubuntu-latest
+    name: A job to deploy pipeline from the GitHub repo
+    steps:
+      - name: Deploy ReactiveSearch Pipeline
+        uses: appbaseio/pipelines-action
+        with:
+          url: ${{secrets.APPBASEIOURL}}
 ```
 
 ## Inputs
@@ -21,8 +34,6 @@ It just requires a few inputs from the user:
 | **`pipeline_id`** | string | false | Pipeline ID to map for the pipeline | `<orgname>-<reponame>` |
 | **`file`** | string | true | Path to the pipeline file | `./pipeline.yaml` |
 | **`depends`** | string | false | This is a string of objects that are dependencies of the pipeline | '{}' |
-
-### URL
 
 ## Development
 
