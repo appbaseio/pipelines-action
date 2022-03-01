@@ -43,6 +43,7 @@ module.exports = {
         if (!Object.keys(pipeDepends).length) {
             // Resolve dependencies from the yaml file
             scriptRefs = this.extractDependenciesFromPipeline(pipelineFile)
+            pipeDepends = this.resolveScriptRefs(scriptRefs, pipelineFile)
         }
 
         // Validate the files
@@ -94,6 +95,43 @@ module.exports = {
         })
 
         return scriptRefs
+    },
+    resolveScriptRefs: function (scriptRefs, pipelinePath) {
+        /**
+         * Resolve the script refs based on the path of the
+         * pipeline file.
+         * 
+         * Paths that start with . will be considered root paths
+         * and will not be altered at all.
+         * 
+         * Paths that start with a `/` or anything else will be
+         * considerd a relative path to the directory where the
+         * pipeline file is located.
+         * 
+         * @param {Array} scriptRefs - Array of script refs to resolve.
+         * @param {string} pipelinePath - Path to the pipeline file in order
+         * to extract the directory where pipeline is located.
+         * 
+         * @returns {Object} - Pipeline dependencies resolved to an array
+         * that can be used in formdata.
+         */
+        const pipelineDirectory = path.dirname(pipelinePath)
+        const pipeDepends = new Object()
+
+        scriptRefs.forEach(scriptRef => {
+            // If it is in the root directory, no need to
+            // resolve, use as is.
+            var resolvedPath = scriptRef
+
+            if (!scriptRef.startsWith("./")) {
+                // Else join the pipeline directory to the scriptRef path.
+                resolvedPath = path.join(pipelineDirectory, scriptRef)
+            }
+
+            pipeDepends[scriptRef] = resolvedPath
+        })
+
+        return pipeDepends
     },
     validateFiles: function (pipelineFile, pipelineDependencies) {
         /**
