@@ -11,6 +11,7 @@ inputs:
   file:
     description: "Pipeline file to be used to create the pipeline"
     required: true
+    default: './pipeline.yaml'
   depends:
     description: "Pipeline files dependencies, this should be an array of strings"
     required: false
