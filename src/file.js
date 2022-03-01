@@ -39,7 +39,10 @@ module.exports = {
         //
         // The key will be the key for the form and the value
         // will be the path of the dependency file.
-        const pipeDepends = JSON.parse(dependencies)
+        var pipeDepends = JSON.parse(dependencies)
+        if (!Object.keys(pipeDepends).length) {
+            // Resolve dependencies from the yaml file
+        }
 
         // Validate the files
         core.info("Validating passed files...")
@@ -61,6 +64,35 @@ module.exports = {
 
         // Return the form
         return form
+    },
+    extractDependenciesFromPipeline: function (file) {
+        /**
+         * Extract the dependencies from the pipeline.
+         * 
+         * Just read the yaml file and extract all the scriptRef
+         * fields in the stages.
+         * 
+         * This method does NOT resolve the paths and just returns
+         * the scriptRef fields as is.
+         * 
+         * @param {string} file - Path to the pipeline file.
+         * 
+         * @returns {Array} - The array of strings that contains all the
+         * scriptRef's used in the file.
+         */
+        const yamlDoc = this.readYaml(file)
+
+        const scriptRefs = new Array()
+
+        // Though 0 stages is an error, it will be handled by the API
+        // and we will just ignore it at this point.
+        if (yamlDoc.stages == undefined) return scriptRefs
+
+        yamlDoc.stages.forEach(stage => {
+            if (stage.scriptRef != undefined) scriptRefs.push(stage.scriptRef)
+        })
+
+        return scriptRefs
     },
     validateFiles: function (pipelineFile, pipelineDependencies) {
         /**
