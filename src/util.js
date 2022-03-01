@@ -20,5 +20,20 @@ module.exports = {
         pipelineID = pipelineID.replace(/\//g, "-")
         pipelineID = pipelineID.replace(/\s/g, "_")
         return pipelineID
+    },
+    replaceUrlAuth: function (url) {
+        /**
+         * Replace the auth in the URL with * so that
+         * it can be printed properly.
+         * 
+         * @param {string} url - URL to replace the auth in.
+         * 
+         * @returns {string} - The cleaned up URL with auth
+         * replaced.
+         */
+        // Extract the URL without auth or https
+        baseURL = url.replace(/^((?:\w+:)?\/\/)[^@/]+@|https:\/\//, "")
+
+        return `https://****:****@${baseURL}`
     }
 }
