@@ -42,6 +42,7 @@ module.exports = {
         var pipeDepends = JSON.parse(dependencies)
         if (!Object.keys(pipeDepends).length) {
             // Resolve dependencies from the yaml file
+            scriptRefs = this.extractDependenciesFromPipeline(pipelineFile)
         }
 
         // Validate the files
