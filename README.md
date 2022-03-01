@@ -73,7 +73,7 @@ The `depends` object should be:
 
 ```json
 {
-  helloFile: "./hello.js"
+  "helloFile": "./hello.js"
 }
 ```
 
