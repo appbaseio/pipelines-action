@@ -59,6 +59,9 @@ module.exports = {
             form.append(key, fs.createReadStream(pipeDepends[key]))
         })
 
+        // TODO: Remove following line
+        form.info(`Generated form data: ${form}`)
+
         // Return the form
         return form
     },
