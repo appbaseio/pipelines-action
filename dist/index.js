@@ -14237,7 +14237,7 @@ module.exports = {
         // Else show warning and raise error
         core.warning(`Update call returned non 200 response: ${response.status}`)
         core.setFailed(`Updating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
-        process.exitCode = 1
+        process.exit(1)
     },
     get: async function (url, pipelineID) {
         /**
