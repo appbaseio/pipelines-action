@@ -56,10 +56,13 @@ module.exports = {
 
         // Add the dependencies if any
         Object.keys(pipeDepends).forEach(key => {
-            // TODO: Remove following line
-            core.info(`Appending file: ${key} to ${pipeDepends[key]}`)
             form.append(key, fs.createReadStream(pipeDepends[key]))
         })
+
+        // TODO: Remove the following line
+        for (var pair of form.entries()) {
+            core.info(pair[0] + ": mapped to: " + pair[1])
+        }
 
         // Return the form
         return form
