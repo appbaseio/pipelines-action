@@ -9,3 +9,5 @@ routes:
 stages:
   - id: "nana"
     script: "console.log('nana');"
+  - id: "second step"
+    scriptRef: "second"
