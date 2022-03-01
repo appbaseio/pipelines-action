@@ -13980,6 +13980,9 @@ module.exports = {
             form.append(key, fs.createReadStream(pipeDepends[key]))
         })
 
+        // TODO: Remove following line
+        form.info(`Generated form data: ${form}`)
+
         // Return the form
         return form
     },
@@ -14410,7 +14413,8 @@ async function main() {
         core.info("Generating form data to be passed based on passed files...")
         const formData = file.buildFormData(pipelineFile, dependencies, pipelineID)
 
-        core.info(`${action.slice(0, action.length - 1)}ing pipeline using ID: ${pipelineID}`)
+        const actionToPrint = action[0].toUpperCase() + action.slice(1, action.length - 1)
+        core.info(`${actionToPrint}ing pipeline using ID: ${pipelineID}`)
         switch (action) {
             case "create":
                 // Create the pipeline
