@@ -13970,6 +13970,8 @@ module.exports = {
             pipeDepends = this.resolveScriptRefs(scriptRefs, pipelineFile)
         }
 
+        console.log(JSON.stringify(pipeDepends))
+
         // Validate the files
         core.info("Validating passed files...")
         this.validateFiles(pipelineFile, pipeDepends)
@@ -14050,6 +14052,8 @@ module.exports = {
             if (!scriptRef.startsWith("./")) {
                 // Else join the pipeline directory to the scriptRef path.
                 resolvedPath = path.join(pipelineDirectory, scriptRef)
+
+                resolvedPath = "./" + resolvedPath
             }
 
             pipeDepends[scriptRef] = resolvedPath
@@ -14233,6 +14237,7 @@ module.exports = {
         // Else show warning and raise error
         core.warning(`Update call returned non 200 response: ${response.status}`)
         core.setFailed(`Updating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
+        process.exitCode = 1
     },
     get: async function (url, pipelineID) {
         /**
