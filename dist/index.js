@@ -13963,9 +13963,11 @@ module.exports = {
         const pipeDepends = JSON.parse(dependencies)
 
         // Validate the files
+        core.info("Validating passed files...")
         this.validateFiles(pipelineFile, pipeDepends)
 
         // Add the pipeline ID in the pipeline file
+        core.info("Writing passed pipeline ID to file")
         this.updateFileWithID(pipelineFile, pipelineID)
 
         const form = new FormData()
@@ -13997,17 +13999,17 @@ module.exports = {
          * @returns {null}
          */
         // Chcek if pipeline file exists
-        if (!fs.existsSync(pipelineFile)) throw `File does not exist: ${pipelineFile}`
+        if (!fs.existsSync(pipelineFile)) core.setFailed(`File does not exist: ${pipelineFile}`)
 
         // Check if pipeline file is an yaml
         const pipelineExtension = path.extname(pipelineFile)
-        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") throw `Pipeline file should be YAML, got ${pipelineFile}`
+        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") core.setFailed(`Pipeline file should be YAML, got ${pipelineFile}`)
 
         // Validate the pipeline files
         Object.keys(pipelineDependencies).forEach(key => {
             // Make sure the file exists
             const dependencyFile = pipelineDependencies[key]
-            if (!fs.existsSync(dependencyFile)) throw `File does not exist: ${dependencyFile}`
+            if (!fs.existsSync(dependencyFile)) core.setFailed(`File does not exist: ${dependencyFile}`)
         })
     },
     updateFileWithID: function (file, pipelineID) {
@@ -14056,6 +14058,7 @@ module.exports = {
  * based on the passed data.
  */
 
+const core = __nccwpck_require__(9185)
 var fetch = __nccwpck_require__(6197)
 
 module.exports = {
@@ -14079,6 +14082,15 @@ module.exports = {
             method: "POST",
             body: body,
         })
+
+        // A create is valid only if it returns a 201
+        if (response.status == 201) return
+
+        const responseJSON = await response.json()
+
+        // Else show warning and raise error
+        core.warning(`Create call returned non 201 response: ${response.status}`)
+        core.setFailed(`Creating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
     },
     update: async function (url, body, pipelineID) {
         /**
@@ -14101,6 +14113,15 @@ module.exports = {
             method: "PUT",
             body: body
         })
+
+        // An update is valid only if it returns a 200
+        if (response.status == 200) return
+
+        const responseJSON = await response.json()
+
+        // Else show warning and raise error
+        core.warning(`Update call returned non 200 response: ${response.status}`)
+        core.setFailed(`Updating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
     },
     get: async function (url, pipelineID) {
         /**
@@ -14369,21 +14390,27 @@ async function main() {
         const dependencies = core.getInput("depends");
 
         // Clean the pipeline ID to make it usable
+        core.info("Cleaning up the passed pipeline ID to make it URL safe")
         var pipelineID = util.cleanPipelineID(origPipelineID);
 
         // Check what action to do, i:e create or update
         // We can check this by checking whether the pipeline with the
         // passed ID is already present or not.
+        core.info("Trying to get the pipeline from upstream")
         const pipelineFetched = await pipeline.get(appbaseURL, pipelineID)
+        core.info("Pipeline fetch completed")
 
         // Update the action accordingly
         const action = pipelineFetched == null ? 'create' : 'update';
+        core.info(`Action determined based on fetched pipeline: ${action}`)
 
         // Generate form data
         // Thie method will also make sure the `id` field is set to the
         // one passed by user so that the create works properly!
+        core.info("Generating form data to be passed based on passed files...")
         const formData = file.buildFormData(pipelineFile, dependencies, pipelineID)
 
+        core.info(`${action.slice(0, action.length - 1)}ing pipeline using ID: ${pipelineID}`)
         switch (action) {
             case "create":
                 // Create the pipeline
