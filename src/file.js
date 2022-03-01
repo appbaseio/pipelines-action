@@ -105,14 +105,7 @@ module.exports = {
          * @param {string} file - The file to work on. Should be an YAML file.
          * @param {string} pipelineID - The pipeline ID to set in the file.
          */
-        var yamlDoc
-
-        // Read the file
-        try {
-            yamlDoc = yaml.load(fs.readFileSync(file, "utf8"));
-        } catch (error) {
-            core.setFailed(error.message)
-        }
+        var yamlDoc = this.readYaml(file)
 
         // Update the ID in the doc
         yamlDoc.id = pipelineID
@@ -138,6 +131,25 @@ module.exports = {
          * 
          * @returns {Array} - Array of routes defined by the user.
          */
+        const yamlDoc = this.readYaml(file)
+
+        var routesDefined = new Array
+        yamlDoc.routes.forEach(route => {
+            routesDefined.push(route.path)
+        })
+
+        return routesDefined
+    },
+    readYaml: function () {
+        /**
+         * Read the passed yaml file and return an object
+         * that allows access to all the fields in the YAML.
+         * 
+         * @param {string} file - Path to the yaml file.
+         * 
+         * @returns {Object} - The read YAML content parsed into
+         * a JSON object.
+         */
         var yamlDoc
 
         // Read the file
@@ -147,11 +159,6 @@ module.exports = {
             core.setFailed(error.message)
         }
 
-        var routesDefined = new Array
-        yamlDoc.routes.forEach(route => {
-            routesDefined.push(route.path)
-        })
-
-        return routesDefined
+        return yamlDoc
     }
 }
