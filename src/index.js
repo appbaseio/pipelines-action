@@ -73,7 +73,7 @@ async function main() {
 
         routesDefined = file.readPipelineRoutes(pipelineFile)
         routesDefined.forEach(route => {
-            core.info(`${appbaseURL}${route}`)
+            core.info(`${util.replaceUrlAuth(appbaseURL)}${route}`)
         })
         core.info("\n\n")
         core.info("Login to the ReactiveSearch dashboard for additional configuration and viewing live logs:\nhttps://dash.appbase.io")

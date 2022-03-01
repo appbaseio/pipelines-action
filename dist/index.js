@@ -14205,6 +14205,21 @@ module.exports = {
         pipelineID = pipelineID.replace(/\//g, "-")
         pipelineID = pipelineID.replace(/\s/g, "_")
         return pipelineID
+    },
+    replaceUrlAuth: function (url) {
+        /**
+         * Replace the auth in the URL with * so that
+         * it can be printed properly.
+         * 
+         * @param {string} url - URL to replace the auth in.
+         * 
+         * @returns {string} - The cleaned up URL with auth
+         * replaced.
+         */
+        // Extract the URL without auth or https
+        baseURL = url.replace(/^((?:\w+:)?\/\/)[^@/]+@|https:\/\//, "")
+
+        return `https://****:****@${baseURL}`
     }
 }
 
@@ -14457,15 +14472,15 @@ async function main() {
 
         // Print a nice message indicating the pipeline was deployed succesfully
         // and where they can find it.
-        core.info("✅ Pipeline successfully deployed!")
+        core.info("\n✅ Pipeline successfully deployed!")
         core.info("Pipeline is live for the following routes:")
 
         routesDefined = file.readPipelineRoutes(pipelineFile)
         routesDefined.forEach(route => {
-            core.info(`${appbaseURL}${route}`)
+            core.info(`${util.replaceUrlAuth(appbaseURL)}${route}`)
         })
         core.info("\n\n")
-        core.info("Login to the ReactiveSearch dashboard for additional configuration and viewing live logs:\n https://dash.appbase.io")
+        core.info("Login to the ReactiveSearch dashboard for additional configuration and viewing live logs:\nhttps://dash.appbase.io")
 
     } catch (error) {
         core.setFailed(error.message);
