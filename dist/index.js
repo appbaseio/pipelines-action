@@ -13981,7 +13981,7 @@ module.exports = {
         })
 
         // TODO: Remove following line
-        form.info(`Generated form data: ${form}`)
+        core.info(`Generated form data: ${form}`)
 
         // Return the form
         return form
