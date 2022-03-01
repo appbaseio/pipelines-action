@@ -2,6 +2,8 @@
 
 GitHub Action to manage an Appbase.io pipeline from a github repository.
 
+![Preview of deploying action](./github/assets/preview.png)
+
 ## Usage
 
 This action can be used out of the box to manage a pipeline from a GitHub repository.
