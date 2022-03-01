@@ -42,9 +42,11 @@ module.exports = {
         const pipeDepends = JSON.parse(dependencies)
 
         // Validate the files
+        core.info("Validating passed files...")
         this.validateFiles(pipelineFile, pipeDepends)
 
         // Add the pipeline ID in the pipeline file
+        core.info("Writing passed pipeline ID to file")
         this.updateFileWithID(pipelineFile, pipelineID)
 
         const form = new FormData()
@@ -76,17 +78,17 @@ module.exports = {
          * @returns {null}
          */
         // Chcek if pipeline file exists
-        if (!fs.existsSync(pipelineFile)) throw `File does not exist: ${pipelineFile}`
+        if (!fs.existsSync(pipelineFile)) core.setFailed(`File does not exist: ${pipelineFile}`)
 
         // Check if pipeline file is an yaml
         const pipelineExtension = path.extname(pipelineFile)
-        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") throw `Pipeline file should be YAML, got ${pipelineFile}`
+        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") core.setFailed(`Pipeline file should be YAML, got ${pipelineFile}`)
 
         // Validate the pipeline files
         Object.keys(pipelineDependencies).forEach(key => {
             // Make sure the file exists
             const dependencyFile = pipelineDependencies[key]
-            if (!fs.existsSync(dependencyFile)) throw `File does not exist: ${dependencyFile}`
+            if (!fs.existsSync(dependencyFile)) core.setFailed(`File does not exist: ${dependencyFile}`)
         })
     },
     updateFileWithID: function (file, pipelineID) {
