@@ -13960,7 +13960,15 @@ module.exports = {
         //
         // The key will be the key for the form and the value
         // will be the path of the dependency file.
-        const pipeDepends = JSON.parse(dependencies)
+        var pipeDepends = JSON.parse(dependencies)
+
+        // If the parsed JSON is empty, resolve the scriptRefs
+        // automatically
+        if (!Object.keys(pipeDepends).length) {
+            // Resolve dependencies from the yaml file
+            scriptRefs = this.extractDependenciesFromPipeline(pipelineFile)
+            pipeDepends = this.resolveScriptRefs(scriptRefs, pipelineFile)
+        }
 
         // Validate the files
         core.info("Validating passed files...")
@@ -13982,6 +13990,72 @@ module.exports = {
 
         // Return the form
         return form
+    },
+    extractDependenciesFromPipeline: function (file) {
+        /**
+         * Extract the dependencies from the pipeline.
+         * 
+         * Just read the yaml file and extract all the scriptRef
+         * fields in the stages.
+         * 
+         * This method does NOT resolve the paths and just returns
+         * the scriptRef fields as is.
+         * 
+         * @param {string} file - Path to the pipeline file.
+         * 
+         * @returns {Array} - The array of strings that contains all the
+         * scriptRef's used in the file.
+         */
+        const yamlDoc = this.readYaml(file)
+
+        const scriptRefs = new Array()
+
+        // Though 0 stages is an error, it will be handled by the API
+        // and we will just ignore it at this point.
+        if (yamlDoc.stages == undefined) return scriptRefs
+
+        yamlDoc.stages.forEach(stage => {
+            if (stage.scriptRef != undefined) scriptRefs.push(stage.scriptRef)
+        })
+
+        return scriptRefs
+    },
+    resolveScriptRefs: function (scriptRefs, pipelinePath) {
+        /**
+         * Resolve the script refs based on the path of the
+         * pipeline file.
+         * 
+         * Paths that start with . will be considered root paths
+         * and will not be altered at all.
+         * 
+         * Paths that start with a `/` or anything else will be
+         * considerd a relative path to the directory where the
+         * pipeline file is located.
+         * 
+         * @param {Array} scriptRefs - Array of script refs to resolve.
+         * @param {string} pipelinePath - Path to the pipeline file in order
+         * to extract the directory where pipeline is located.
+         * 
+         * @returns {Object} - Pipeline dependencies resolved to an array
+         * that can be used in formdata.
+         */
+        const pipelineDirectory = path.dirname(pipelinePath)
+        const pipeDepends = new Object()
+
+        scriptRefs.forEach(scriptRef => {
+            // If it is in the root directory, no need to
+            // resolve, use as is.
+            var resolvedPath = scriptRef
+
+            if (!scriptRef.startsWith("./")) {
+                // Else join the pipeline directory to the scriptRef path.
+                resolvedPath = path.join(pipelineDirectory, scriptRef)
+            }
+
+            pipeDepends[scriptRef] = resolvedPath
+        })
+
+        return pipeDepends
     },
     validateFiles: function (pipelineFile, pipelineDependencies) {
         /**
@@ -14026,14 +14100,7 @@ module.exports = {
          * @param {string} file - The file to work on. Should be an YAML file.
          * @param {string} pipelineID - The pipeline ID to set in the file.
          */
-        var yamlDoc
-
-        // Read the file
-        try {
-            yamlDoc = yaml.load(fs.readFileSync(file, "utf8"));
-        } catch (error) {
-            core.setFailed(error.message)
-        }
+        var yamlDoc = this.readYaml(file)
 
         // Update the ID in the doc
         yamlDoc.id = pipelineID
@@ -14059,6 +14126,25 @@ module.exports = {
          * 
          * @returns {Array} - Array of routes defined by the user.
          */
+        const yamlDoc = this.readYaml(file)
+
+        var routesDefined = new Array
+        yamlDoc.routes.forEach(route => {
+            routesDefined.push(route.path)
+        })
+
+        return routesDefined
+    },
+    readYaml: function (file) {
+        /**
+         * Read the passed yaml file and return an object
+         * that allows access to all the fields in the YAML.
+         * 
+         * @param {string} file - Path to the yaml file.
+         * 
+         * @returns {Object} - The read YAML content parsed into
+         * a JSON object.
+         */
         var yamlDoc
 
         // Read the file
@@ -14068,12 +14154,7 @@ module.exports = {
             core.setFailed(error.message)
         }
 
-        var routesDefined = new Array
-        yamlDoc.routes.forEach(route => {
-            routesDefined.push(route.path)
-        })
-
-        return routesDefined
+        return yamlDoc
     }
 }
 
