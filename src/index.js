@@ -68,6 +68,15 @@ async function main() {
 
         // Print a nice message indicating the pipeline was deployed succesfully
         // and where they can find it.
+        core.info("✅ Pipeline successfully deployed!")
+        core.info("Pipeline is live for the following routes:")
+
+        routesDefined = file.readPipelineRoutes(pipelineFile)
+        routesDefined.forEach(route => {
+            core.info(`${appbaseURL}${route}`)
+        })
+        core.info("\n\n")
+        core.info("Login to the ReactiveSearch dashboard for additional configuration and viewing live logs:\n https://dash.appbase.io")
 
     } catch (error) {
         core.setFailed(error.message);
