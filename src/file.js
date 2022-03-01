@@ -60,7 +60,10 @@ module.exports = {
         })
 
         // TODO: Remove following line
-        core.info(`Generated form data: ${form}`)
+        // Display the key/value pairs
+        for (var pair of form.entries()) {
+            core.info(pair[0] + ', ' + pair[1]);
+        }
 
         // Return the form
         return form
