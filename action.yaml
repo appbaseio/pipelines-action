@@ -1,5 +1,5 @@
-name: 'Appbase Pipeline'
-description: "Deploy Appbase.io's pipelines from GitHub repos"
+name: 'ReactiveSearch Pipelines'
+description: "Deploy repository as a ReactiveSearch pipeline"
 inputs:
   url:
     description: "URL to connect to Appbase.io cluster"
@@ -8,6 +8,14 @@ inputs:
     description: "Pipeline ID for the current pipeline"
     required: false
     default: ${{github.repository}}
+  file:
+    description: "Pipeline file to be used to create the pipeline"
+    required: true
+    default: './pipeline.yaml'
+  depends:
+    description: "Pipeline files dependencies, this should be an array of strings"
+    required: false
+    default: '{}'
 runs:
   using: 'node16'
   main: 'dist/index.js'
