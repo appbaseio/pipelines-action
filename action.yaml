@@ -1,5 +1,5 @@
-name: 'Appbase Pipeline'
-description: "Deploy Appbase.io's pipelines from GitHub repos"
+name: 'ReactiveSearch Pipelines'
+description: "Deploy repository as a ReactiveSearch pipeline"
 inputs:
   url:
     description: "URL to connect to Appbase.io cluster"

@@ -2,6 +2,27 @@
 
 GitHub Action to manage an Appbase.io pipeline from a github repository.
 
+## Usage
+
+This action can be used out of the box to manage a pipeline from a GitHub repository.
+
+Following is an example action.yaml for using the pipeline with default values and a `pipeline.yaml` file in the root of the repository:
+
+```yaml
+```
+
+## Inputs
+
+It just requires a few inputs from the user:
+
+| Field | Type | Required | Description | Default |
+| --- | --- | --- | --- | --- |
+| **`url`** | string | true | URL to connect to Appbase.io's instance | --- |
+| **`pipeline_id`** | string | false | Pipeline ID to map for the pipeline | `<orgname>-<reponame>` |
+| **`file`** | string | true | Path to the pipeline file | --- |
+| **`depends`** | string | false | This is a string of objects that are dependencies of the pipeline | '{}' |
+
+### URL
 
 ## Development
 
