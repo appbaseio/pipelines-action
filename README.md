@@ -32,10 +32,53 @@ It just requires a few inputs from the user:
 
 | Field | Type | Required | Description | Default |
 | --- | --- | --- | --- | --- |
-| **`url`** | string | true | URL to connect to Appbase.io's instance | --- |
-| **`pipeline_id`** | string | false | Pipeline ID to map for the pipeline | `<orgname>-<reponame>` |
-| **`file`** | string | true | Path to the pipeline file | `./pipeline.yaml` |
-| **`depends`** | string | false | This is a string of objects that are dependencies of the pipeline | '{}' |
+| **[url](#url)** | string | true | URL to connect to Appbase.io's instance | --- |
+| **[pipeline_id](#pipeline-id)** | string | false | Pipeline ID to map for the pipeline | `<orgname>-<reponame>` |
+| **[file](#file)** | string | true | Path to the pipeline file | `./pipeline.yaml` |
+| **[depends](#depends)** | string | false | This is a string of objects that are dependencies of the pipeline | '{}' |
+
+### URL
+
+URL is the url to connect to Appbase.io's instance. This URL should contain the credentials in the following way:
+
+```
+https://username:password@appbaseioinstanceURL.com
+```
+
+### Pipeline ID
+
+The ID for the pipeline mananged from the current repository. This parameter is optional. By default it is set to `<orgname>-<reponame>` which is picked up from the github context.
+
+If the repository is `appbaseio/pipelines-action`, pipeline ID will be: `appbaseio-pipelines-action`
+
+### File
+
+Path to the pipeline file. This file should follow the pipeline file structure based on Appbase.io's details. By default this will be set to `./pipeline.yaml` which would be a `pipeline.yaml` in the root of the repo.
+
+> The `scriptRef` field in stages can contain relative paths or direct paths and will be resolved by the action. For this to work, `depends` should not be passed in the yaml file.
+
+### Depends
+
+This should be a stringified object of dependencies. The **key** should be the **key** used in the `scriptRef` field at any stage and the **value** should be a path to a file.
+
+If there is a stage defined in the pipeline file:
+
+```yaml
+stages:
+  - id: "test stage"
+    scriptRef: "helloFile"
+```
+
+The `depends` object should be:
+
+```json
+{
+  helloFile: "./hello.js"
+}
+```
+
+> NOTE: In order to resolve the `scriptRef` automatically, this field should be omitted.
+
 
 ## Development
 
