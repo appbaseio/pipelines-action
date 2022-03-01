@@ -4,6 +4,7 @@
  * based on the passed data.
  */
 
+const core = require("@actions/core")
 var fetch = require("node-fetch")
 
 module.exports = {
@@ -27,6 +28,15 @@ module.exports = {
             method: "POST",
             body: body,
         })
+
+        // A create is valid only if it returns a 201
+        if (response.status == 201) return
+
+        const responseJSON = await response.json()
+
+        // Else show warning and raise error
+        core.warning(`Create call returned non 201 response: ${response.status}`)
+        core.setFailed(`Creating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
     },
     update: async function (url, body, pipelineID) {
         /**
@@ -49,6 +59,15 @@ module.exports = {
             method: "PUT",
             body: body
         })
+
+        // An update is valid only if it returns a 200
+        if (response.status == 200) return
+
+        const responseJSON = await response.json()
+
+        // Else show warning and raise error
+        core.warning(`Update call returned non 200 response: ${response.status}`)
+        core.setFailed(`Updating pipeline failed with response: ${JSON.stringify(responseJSON)}`)
     },
     get: async function (url, pipelineID) {
         /**
