@@ -40,6 +40,9 @@ module.exports = {
         // The key will be the key for the form and the value
         // will be the path of the dependency file.
         var pipeDepends = JSON.parse(dependencies)
+
+        // If the parsed JSON is empty, resolve the scriptRefs
+        // automatically
         if (!Object.keys(pipeDepends).length) {
             // Resolve dependencies from the yaml file
             scriptRefs = this.extractDependenciesFromPipeline(pipelineFile)
@@ -211,7 +214,7 @@ module.exports = {
 
         return routesDefined
     },
-    readYaml: function () {
+    readYaml: function (file) {
         /**
          * Read the passed yaml file and return an object
          * that allows access to all the fields in the YAML.
