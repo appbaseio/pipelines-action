@@ -1,5 +1,9 @@
 name: 'ReactiveSearch Pipelines'
 description: "Deploy repository as a ReactiveSearch pipeline"
+branding:
+  icon: "cloud-lightning"
+  color: "red"
+
 inputs:
   url:
     description: "URL to connect to Appbase.io cluster"
