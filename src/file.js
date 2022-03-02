@@ -124,17 +124,14 @@ module.exports = {
         const pipeDepends = new Object()
 
         scriptRefs.forEach(scriptRef => {
-            // If it is in the root directory, no need to
-            // resolve, use as is.
-            var resolvedPath = scriptRef
-
-            if (!scriptRef.startsWith("./")) {
-                // Else join the pipeline directory to the scriptRef path.
-                resolvedPath = path.join(pipelineDirectory, scriptRef)
-
-                resolvedPath = "./" + resolvedPath
-            }
-
+            // If it is an asbolute path, just make it absolute
+            // to the root of the directory, else resolve it based
+            // on the pipeline directory.
+            //
+            // ./test.js -> ./examples/test.js
+            // /test.js -> ./test.js
+            // test.js -> ./examples/test.js
+            var resolvedPath = path.isAbsolute(scriptRef) ? "." + scriptRef : path.resolve(pipelineDirectory, scriptRef)
             pipeDepends[scriptRef] = resolvedPath
         })
 
@@ -156,17 +153,26 @@ module.exports = {
          * @returns {null}
          */
         // Chcek if pipeline file exists
-        if (!fs.existsSync(pipelineFile)) core.setFailed(`File does not exist: ${pipelineFile}`)
+        if (!fs.existsSync(pipelineFile)) {
+            core.setFailed(`File does not exist: ${pipelineFile}`)
+            process.exit(1)
+        }
 
         // Check if pipeline file is an yaml
         const pipelineExtension = path.extname(pipelineFile)
-        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") core.setFailed(`Pipeline file should be YAML, got ${pipelineFile}`)
+        if (pipelineExtension != ".yaml" && pipelineExtension != ".yml") {
+            core.setFailed(`Pipeline file should be YAML, got ${pipelineFile}`)
+            process.exit(1)
+        }
 
         // Validate the pipeline files
         Object.keys(pipelineDependencies).forEach(key => {
             // Make sure the file exists
             const dependencyFile = pipelineDependencies[key]
-            if (!fs.existsSync(dependencyFile)) core.setFailed(`File does not exist: ${dependencyFile}`)
+            if (!fs.existsSync(dependencyFile)) {
+                core.setFailed(`File does not exist: ${dependencyFile}`)
+                process.exit(1)
+            }
         })
     },
     updateFileWithID: function (file, pipelineID) {
@@ -193,6 +199,7 @@ module.exports = {
             fs.writeFileSync(file, yaml.dump(yamlDoc))
         } catch (writeErr) {
             core.setFailed(writeErr.message)
+            process.exit(1)
         }
     },
     readPipelineRoutes: function (file) {
@@ -235,6 +242,7 @@ module.exports = {
             yamlDoc = yaml.load(fs.readFileSync(file, "utf8"));
         } catch (error) {
             core.setFailed(error.message)
+            process.exit(1)
         }
 
         return yamlDoc
