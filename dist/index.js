@@ -14043,15 +14043,14 @@ module.exports = {
         const pipeDepends = new Object()
 
         scriptRefs.forEach(scriptRef => {
-            // If it is in the root directory, no need to
-            // resolve, use as is.
-            var resolvedPath = scriptRef
-
-            if (!scriptRef.startsWith("./")) {
-                // Else join the pipeline directory to the scriptRef path.
-                resolvedPath = path.join(pipelineDirectory, scriptRef)
-            }
-
+            // If it is an asbolute path, just make it absolute
+            // to the root of the directory, else resolve it based
+            // on the pipeline directory.
+            //
+            // ./test.js -> ./examples/test.js
+            // /test.js -> ./test.js
+            // test.js -> ./examples/test.js
+            var resolvedPath = path.isAbsolute(scriptRef) ? "." + scriptRef : path.resolve(pipelineDirectory, scriptRef)
             pipeDepends[scriptRef] = resolvedPath
         })
 
