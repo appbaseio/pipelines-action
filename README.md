@@ -45,6 +45,8 @@ URL is the url to connect to Appbase.io's instance. This URL should contain the 
 https://username:password@appbaseioinstanceURL.com
 ```
 
+It is best to not keep this in the file directly and instead store it as a secret. It can then be referenced as a secret in the action file. [Read more about GitHub secrets here](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+
 ### Pipeline ID
 
 The ID for the pipeline mananged from the current repository. This parameter is optional. By default it is set to `<orgname>-<reponame>` which is picked up from the github context.
