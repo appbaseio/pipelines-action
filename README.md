@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to deploy pipeline from the GitHub repo
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
       - name: Deploy ReactiveSearch Pipeline
         uses: appbaseio/pipelines-action
         with:
