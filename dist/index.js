@@ -13949,7 +13949,7 @@ module.exports = {
         const value = process.env[`${key.toUpperCase()}`] || ""
         console.log(value)
         console.log("key: ", key.toUpperCase())
-        console.log(process.env)
+        console.log(process.env[key])
 
         if (!value) {
             core.setFailed(`Invalid value for key: ${key}. Value is either empty or not present.`)
