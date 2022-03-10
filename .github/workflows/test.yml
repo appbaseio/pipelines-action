@@ -12,8 +12,15 @@ jobs:
       - name: Deploy Pipeline
         uses: ./ # Uses an action in the root directory
         id: hello
-        env:
-          TEST_KEY: "some random string"
         with:
           url: ${{secrets.APPBASEIOURL}}
           file: "./examples/pipe.yaml"
+        env:
+          TEST_KEY: some random string
+      - name: Print env vars
+        uses: actions/github-script@v6
+        env:
+          TEST_KEY: some random string
+        with:
+          script: |
+            console.log("TEST_KEY: ", process.env.TEST_KEY)
