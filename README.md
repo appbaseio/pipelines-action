@@ -11,6 +11,7 @@
 [![GitHub release](https://img.shields.io/github/v/release/appbaseio/pipelines-action.svg?style=for-the-badge)](https://github.com/appbaseio/pipelines-action/releases/latest)
 [![GitHub marketplace](https://img.shields.io/badge/marketplace-reactivesearch--pipelines-pink?logo=github&style=for-the-badge)](https://github.com/marketplace/actions/reactivesearch-pipelines)
 [![Maintained](https://img.shields.io/badge/Maintained%3F-Yes-lightgreen?style=for-the-badge)](https://github.com/appbaseio/pipelines-action)
+[![License](https://img.shields.io/badge/License-Apache%20License%202.0-orange.svg?style=for-the-badge)](./LICENSE)
 
 <br/>
 
