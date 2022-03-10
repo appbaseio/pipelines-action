@@ -87,6 +87,43 @@ The `depends` object should be:
 > NOTE: In order to resolve the `scriptRef` automatically, this field should be omitted.
 
 
+## Environments
+
+In the pipeline file, `envs` can be passed on a global or a per stage basis. These envs can be strings that are passed directly or referenced using the following syntax:
+
+```yaml
+- envs:
+    SOME_ENV_KEY: ${{ ENV_VALUE }}
+```
+
+The action will resovle any envs that have the value in the above syntax by extracting the key `ENV_VALUE` from the actions environment (GitHub parses that).
+
+Let's say, in the above code, we want the `ENV_VALUE` field to resolve to `some secret string`.
+
+We can [add this as a GitHub secret]() with the key: `ENV_VALUE_SECRET`.
+
+Once, it's added on GitHub, while calling the `pipelines-action`, we need to pass this env in the following way:
+
+```yaml
+- name: Deploy Pipeline
+  uses: appbaseio/pipelines-action@0.1.1
+  with:
+    url: ${{secrets.APPBASEIOURL}}
+    file: "./basic/pipeline.yaml"
+  env:
+    ENV_VALUE: ${{ secrets.ENV_VALUE_SECRET }}
+```
+
+> We cannot access GitHub's secret variable directly so we need to basically proxy the envs through the stage envs.
+
+Once, we run the action with the above code, the final `pipeline.yaml` will be resolve to the following:
+
+```yaml
+- envs:
+    SOME_ENV_KEY: some secret string
+```
+
+
 ## Development
 
 The package is written in plain JS and the source code lies on the `src` directory. `src/index.js` is the main entrypoint into the action. However, since GitHub doesn't install the node modules, we are using [@vercel/ncc](https://github.com/vercel/ncc) to create a distributable `index.js` that contains all the code.
