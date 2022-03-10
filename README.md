@@ -4,7 +4,7 @@
 
 <img src="./.github/assets/preview.png" alt="Preview of deploying action" width=500px>
 
-<br/>
+<br/><br/>
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 
