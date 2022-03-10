@@ -13946,7 +13946,7 @@ module.exports = {
          * @returns {string} - The env variable value found in the
          * envs.
          */
-        const value = process.env[`INPUT_${key.replace(/ /g, '_').toUpperCase()}`] || ""
+        const value = process.env[`${key.replace(/ /g, '_').toUpperCase()}`] || ""
 
         if (!key) {
             core.setFailed(`Invalid value for key: ${key}. Value is either empty or not present.`)
