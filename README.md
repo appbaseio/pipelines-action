@@ -1,14 +1,16 @@
 <div align="center">
 
+## GitHub Action to manage an Appbase.io pipeline from a github repository.
+
+<img src="./.github/assets/preview.png" alt="Preview of deploying action" width=500px>
+
+<br/>
+
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 
 [![GitHub release](https://img.shields.io/github/v/release/appbaseio/pipelines-action.svg?style=for-the-badge)](https://github.com/appbaseio/pipelines-action/releases/latest)
 [![GitHub marketplace](https://img.shields.io/badge/marketplace-reactivesearch--pipelines-pink?logo=github&style=for-the-badge)](https://github.com/marketplace/actions/reactivesearch-pipelines)
 [![Maintained](https://img.shields.io/badge/Maintained%3F-Yes-lightgreen?style=for-the-badge)](https://github.com/appbaseio/pipelines-action)
-
-## GitHub Action to manage an Appbase.io pipeline from a github repository.
-
-<img src="./.github/assets/preview.png" alt="Preview of deploying action" width=500px>
 
 <br/>
 
