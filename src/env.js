@@ -11,7 +11,27 @@
  * If the value is not found, it will raise an error.
  */
 
+const core = require("@actions/core")
 
 module.exports = {
+    getEnv: function (key) {
+        /**
+         * Get the env using the passed
+         * `key`. If key is not present, we will
+         * need to raise a fatal error.
+         * 
+         * @param {string} key - The key for the env variable
+         * 
+         * @returns {string} - The env variable value found in the
+         * envs.
+         */
+        const value = process.env[`INPUT_${key.replace(/ /g, '_').toUpperCase()}`] || ""
 
+        if (!key) {
+            core.setFailed(`Invalid value for key: ${key}. Value is either empty or not present.`)
+            process.exit(1)
+        }
+
+        return value
+    }
 }
