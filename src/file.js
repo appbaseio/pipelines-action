@@ -57,6 +57,9 @@ module.exports = {
         core.info("Writing passed pipeline ID to file")
         this.updateFileWithID(pipelineFile, pipelineID)
 
+        // Resolve env references in the `env` object
+        // and write back to the file
+
         const form = new FormData()
 
         // Add the pipeline file
@@ -192,13 +195,7 @@ module.exports = {
         // Update the ID in the doc
         yamlDoc.id = pipelineID
 
-        // Write the udpated content
-        try {
-            fs.writeFileSync(file, yaml.dump(yamlDoc))
-        } catch (writeErr) {
-            core.setFailed(writeErr.message)
-            process.exit(1)
-        }
+        this.writeYaml(file, yamlDoc)
     },
     readPipelineRoutes: function (file) {
         /**
@@ -244,5 +241,27 @@ module.exports = {
         }
 
         return yamlDoc
+    },
+    writeYaml: function (file, yamlDoc) {
+        /**
+         * Write the yamlDoc content to the file by
+         * parsing it to yaml.
+         * 
+         * On success, nothing is returned. On failure the
+         * execution of the script is stopped.
+         * 
+         * @param {string} file - Path to file to write the content
+         * to
+         * @param {Object} yamlDoc - Parsed YAML content
+         * 
+         * @returns {null}
+         */
+        // Write the udpated content
+        try {
+            fs.writeFileSync(file, yaml.dump(yamlDoc))
+        } catch (writeErr) {
+            core.setFailed(writeErr.message)
+            process.exit(1)
+        }
     }
 }
