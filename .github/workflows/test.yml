@@ -12,6 +12,8 @@ jobs:
       - name: Deploy Pipeline
         uses: ./ # Uses an action in the root directory
         id: hello
+        env:
+          TEST_KEY: "some random string"
         with:
           url: ${{secrets.APPBASEIOURL}}
           file: "./examples/pipe.yaml"

@@ -6,6 +6,8 @@ routes:
     classify:
       category: "search"
       acl: "search"
+envs:
+  RESOLVED_KEY: ${{ TEST_KEY }}
 stages:
   - id: "nana"
     script: "console.log('nana');"
