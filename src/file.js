@@ -12,6 +12,7 @@ var fs = require("fs")
 var path = require("path")
 var yaml = require("js-yaml")
 const core = require("@actions/core")
+const env = require("../src/env")
 
 module.exports = {
     buildFormData: function (pipelineFile, dependencies, pipelineID) {
@@ -56,6 +57,11 @@ module.exports = {
         // Add the pipeline ID in the pipeline file
         core.info("Writing passed pipeline ID to file")
         this.updateFileWithID(pipelineFile, pipelineID)
+
+        // Resolve env references in the `env` object
+        // and write back to the file
+        core.info("Resolving envs if any")
+        this.updateFileWithEnv(pipelineFile)
 
         const form = new FormData()
 
@@ -192,13 +198,21 @@ module.exports = {
         // Update the ID in the doc
         yamlDoc.id = pipelineID
 
-        // Write the udpated content
-        try {
-            fs.writeFileSync(file, yaml.dump(yamlDoc))
-        } catch (writeErr) {
-            core.setFailed(writeErr.message)
-            process.exit(1)
-        }
+        this.writeYaml(file, yamlDoc)
+    },
+    updateFileWithEnv: function (file) {
+        /**
+         * Update the file envs with the resolved envs and
+         * write back to the file once done.
+         * 
+         * @param {string} file - The path to the yaml file.
+         */
+        var yamlDoc = this.readYaml(file)
+
+        // Resolve the envs
+        env.resolveEnvs(yamlDoc.envs)
+
+        this.writeYaml(file, yamlDoc)
     },
     readPipelineRoutes: function (file) {
         /**
@@ -244,5 +258,27 @@ module.exports = {
         }
 
         return yamlDoc
+    },
+    writeYaml: function (file, yamlDoc) {
+        /**
+         * Write the yamlDoc content to the file by
+         * parsing it to yaml.
+         * 
+         * On success, nothing is returned. On failure the
+         * execution of the script is stopped.
+         * 
+         * @param {string} file - Path to file to write the content
+         * to
+         * @param {Object} yamlDoc - Parsed YAML content
+         * 
+         * @returns {null}
+         */
+        // Write the udpated content
+        try {
+            fs.writeFileSync(file, yaml.dump(yamlDoc))
+        } catch (writeErr) {
+            core.setFailed(writeErr.message)
+            process.exit(1)
+        }
     }
 }
