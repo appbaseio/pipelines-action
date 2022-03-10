@@ -16,4 +16,4 @@ jobs:
           url: ${{secrets.APPBASEIOURL}}
           file: "./examples/pipe.yaml"
         env:
-          TEST_KEY: some random string
+          TEST_KEY: ${{secrets.APPBASEIOURL}}
