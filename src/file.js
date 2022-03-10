@@ -209,8 +209,13 @@ module.exports = {
          */
         var yamlDoc = this.readYaml(file)
 
-        // Resolve the envs
+        // Resolve the global envs
         env.resolveEnvs(yamlDoc.envs)
+
+        // Resolve the per stage envs, if any
+        yamlDoc.stages.forEach(stage => {
+            if (stage.envs != undefined) env.resolveEnvs(stage.envs)
+        })
 
         this.writeYaml(file, yamlDoc)
     },
