@@ -55,5 +55,34 @@ module.exports = {
 
         // Replace the pattern with the key
         return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1")
+    },
+    resolveEnvs: function (envs) {
+        /**
+         * Resolve the envs if any value contains a key
+         * by exrtacting the key from the process env.
+         * 
+         * This method will only check the top level envs.
+         * Since envs can only be string, it is suggested to keep
+         * the envs as stringified JSON in case of non string types.
+         * 
+         * @param {Object} envs - Object containing the envs.
+         * 
+         * @returns {Object} - The envs after resolving the env
+         * dependencies.
+         */
+        Object.keys(envs).forEach(key => {
+            const passedValue = envs[key]
+
+            const extractedKey = this.extractKey(passedValue)
+            if (!extractedKey) return
+
+            // if extractedKey is found, get the env value
+            // NOTE: Following call will fail if the env key
+            // is not present.
+            const resolvedValue = this.getEnv(extractedKey)
+            envs[key] = resolvedValue
+        })
+
+        return envs
     }
 }
