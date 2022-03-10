@@ -1,3 +1,5 @@
+[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
+
 [![GitHub release](https://img.shields.io/github/v/release/appbaseio/pipelines-action.svg?style=for-the-badge)](https://github.com/appbaseio/pipelines-action/releases/latest)
 [![GitHub marketplace](https://img.shields.io/badge/marketplace-reactivesearch--pipelines-pink?logo=github&style=for-the-badge)](https://github.com/marketplace/actions/reactivesearch-pipelines)
 
