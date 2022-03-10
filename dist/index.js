@@ -13946,9 +13946,9 @@ module.exports = {
          * @returns {string} - The env variable value found in the
          * envs.
          */
-        const value = process.env[`INPUT_${key.replace(/ /g, '_').toUpperCase()}`] || ""
+        const value = process.env[key.toUpperCase()] || ""
 
-        if (!key) {
+        if (!value) {
             core.setFailed(`Invalid value for key: ${key}. Value is either empty or not present.`)
             process.exit(1)
         }
@@ -13975,7 +13975,7 @@ module.exports = {
         if (!value.match(/^\${{.*?}}$/)) return ""
 
         // Replace the pattern with the key
-        return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1")
+        return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1").replace(/\s/g, "")
     },
     resolveEnvs: function (envs) {
         /**
