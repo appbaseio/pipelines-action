@@ -13916,6 +13916,100 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 8552:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+/**
+ * Handle environment resolution for the pipeline
+ * files env vars.
+ * 
+ * We cannot directly access GitHub secrets so we will
+ * have to proxy the secrets through the steps's envs.
+ * 
+ * We will resolve all envs that start with ${{ `env_key_name` }}
+ * by replacing the `env_key_name` with the value.
+ * 
+ * If the value is not found, it will raise an error.
+ */
+
+const core = __nccwpck_require__(9185)
+
+module.exports = {
+    getEnv: function (key) {
+        /**
+         * Get the env using the passed
+         * `key`. If key is not present, we will
+         * need to raise a fatal error.
+         * 
+         * @param {string} key - The key for the env variable
+         * 
+         * @returns {string} - The env variable value found in the
+         * envs.
+         */
+        const value = process.env[`INPUT_${key.replace(/ /g, '_').toUpperCase()}`] || ""
+
+        if (!key) {
+            core.setFailed(`Invalid value for key: ${key}. Value is either empty or not present.`)
+            process.exit(1)
+        }
+
+        return value
+    },
+    extractKey: function (value) {
+        /**
+         * Extract the key from the value passed in the envs
+         * of the pipeline file.
+         * 
+         * We need to check if the value passed follows the
+         * syntax used for replacing a value with something from
+         * the envs.
+         * 
+         * If it doesn't match, we just return an empty string.
+         * If it does, we return the key.
+         * 
+         * @param {string} value - The value to find the key in
+         * 
+         * @returns {string} - String representing the extacted key or
+         * empty string for failure.
+         */
+        if (!value.match(/^\${{.*?}}$/)) return ""
+
+        // Replace the pattern with the key
+        return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1")
+    },
+    resolveEnvs: function (envs) {
+        /**
+         * Resolve the envs if any value contains a key
+         * by exrtacting the key from the process env.
+         * 
+         * This method will only check the top level envs.
+         * Since envs can only be string, it is suggested to keep
+         * the envs as stringified JSON in case of non string types.
+         * 
+         * @param {Object} envs - Object containing the envs.
+         * 
+         * @returns {Object} - The envs after resolving the env
+         * dependencies.
+         */
+        Object.keys(envs).forEach(key => {
+            const passedValue = envs[key]
+
+            const extractedKey = this.extractKey(passedValue)
+            if (!extractedKey) return
+
+            // if extractedKey is found, get the env value
+            // NOTE: Following call will fail if the env key
+            // is not present.
+            const resolvedValue = this.getEnv(extractedKey)
+            envs[key] = resolvedValue
+        })
+
+        return envs
+    }
+}
+
+/***/ }),
+
 /***/ 1654:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -13933,6 +14027,7 @@ var fs = __nccwpck_require__(7147)
 var path = __nccwpck_require__(1017)
 var yaml = __nccwpck_require__(4050)
 const core = __nccwpck_require__(9185)
+const env = __nccwpck_require__(8552)
 
 module.exports = {
     buildFormData: function (pipelineFile, dependencies, pipelineID) {
@@ -13977,6 +14072,11 @@ module.exports = {
         // Add the pipeline ID in the pipeline file
         core.info("Writing passed pipeline ID to file")
         this.updateFileWithID(pipelineFile, pipelineID)
+
+        // Resolve env references in the `env` object
+        // and write back to the file
+        core.info("Resolving envs if any")
+        this.updateFileWithEnv(pipelineFile)
 
         const form = new FormData()
 
@@ -14113,13 +14213,21 @@ module.exports = {
         // Update the ID in the doc
         yamlDoc.id = pipelineID
 
-        // Write the udpated content
-        try {
-            fs.writeFileSync(file, yaml.dump(yamlDoc))
-        } catch (writeErr) {
-            core.setFailed(writeErr.message)
-            process.exit(1)
-        }
+        this.writeYaml(file, yamlDoc)
+    },
+    updateFileWithEnv: function (file) {
+        /**
+         * Update the file envs with the resolved envs and
+         * write back to the file once done.
+         * 
+         * @param {string} file - The path to the yaml file.
+         */
+        var yamlDoc = this.readYaml(file)
+
+        // Resolve the envs
+        env.resolveEnvs(yamlDoc.envs)
+
+        this.writeYaml(file, yamlDoc)
     },
     readPipelineRoutes: function (file) {
         /**
@@ -14165,6 +14273,28 @@ module.exports = {
         }
 
         return yamlDoc
+    },
+    writeYaml: function (file, yamlDoc) {
+        /**
+         * Write the yamlDoc content to the file by
+         * parsing it to yaml.
+         * 
+         * On success, nothing is returned. On failure the
+         * execution of the script is stopped.
+         * 
+         * @param {string} file - Path to file to write the content
+         * to
+         * @param {Object} yamlDoc - Parsed YAML content
+         * 
+         * @returns {null}
+         */
+        // Write the udpated content
+        try {
+            fs.writeFileSync(file, yaml.dump(yamlDoc))
+        } catch (writeErr) {
+            core.setFailed(writeErr.message)
+            process.exit(1)
+        }
     }
 }
 
