@@ -13978,7 +13978,7 @@ module.exports = {
         if (!value.match(/^\${{.*?}}$/)) return ""
 
         // Replace the pattern with the key
-        return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1")
+        return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1").replace(/\s/g, "")
     },
     resolveEnvs: function (envs) {
         /**
