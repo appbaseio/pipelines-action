@@ -1,11 +1,25 @@
-[![GitHub release](https://img.shields.io/github/v/release/appbaseio/pipelines-action.svg?style=for-the-badge)](https://github.com/appbaseio/pipelines-action/releases/latest)
-[![GitHub marketplace](https://img.shields.io/badge/marketplace-reactivesearch--pipelines-pink?logo=github&style=for-the-badge)](https://github.com/marketplace/actions/reactivesearch-pipelines)
+<div align="center">
 
-# About
-
-GitHub Action to manage an Appbase.io pipeline from a github repository.
+## GitHub Action to manage an Appbase.io pipeline from a github repository.
 
 <img src="./.github/assets/preview.png" alt="Preview of deploying action" width=500px>
+
+<br/><br/>
+
+[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
+
+[![GitHub release](https://img.shields.io/github/v/release/appbaseio/pipelines-action.svg?style=for-the-badge)](https://github.com/appbaseio/pipelines-action/releases/latest)
+[![GitHub marketplace](https://img.shields.io/badge/marketplace-reactivesearch--pipelines-pink?logo=github&style=for-the-badge)](https://github.com/marketplace/actions/reactivesearch-pipelines)
+[![Maintained](https://img.shields.io/badge/Maintained%3F-Yes-lightgreen?style=for-the-badge)](https://github.com/appbaseio/pipelines-action)
+[![License](https://img.shields.io/badge/License-Apache%20License%202.0-orange.svg?style=for-the-badge)](./LICENSE)
+
+<br/>
+
+### \[[Usage](#usage)] \[[Inputs](#inputs)] \[[Environments](#environments)] \[[Development](#development)]
+
+<br/><br/>
+
+</div>
 
 ## Usage
 
@@ -85,6 +99,43 @@ The `depends` object should be:
 ```
 
 > NOTE: In order to resolve the `scriptRef` automatically, this field should be omitted.
+
+
+## Environments
+
+In the pipeline file, `envs` can be passed on a global or a per stage basis. These envs can be strings that are passed directly or referenced using the following syntax:
+
+```yaml
+- envs:
+    SOME_ENV_KEY: ${{ ENV_VALUE }}
+```
+
+The action will resovle any envs that have the value in the above syntax by extracting the key `ENV_VALUE` from the actions environment (GitHub parses that).
+
+Let's say, in the above code, we want the `ENV_VALUE` field to resolve to `some secret string`.
+
+We can [add this as a GitHub secret]() with the key: `ENV_VALUE_SECRET`.
+
+Once, it's added on GitHub, while calling the `pipelines-action`, we need to pass this env in the following way:
+
+```yaml
+- name: Deploy Pipeline
+  uses: appbaseio/pipelines-action@0.1.1
+  with:
+    url: ${{secrets.APPBASEIOURL}}
+    file: "./basic/pipeline.yaml"
+  env:
+    ENV_VALUE: ${{ secrets.ENV_VALUE_SECRET }}
+```
+
+> We cannot access GitHub's secret variable directly so we need to basically proxy the envs through the stage envs.
+
+Once, we run the action with the above code, the final `pipeline.yaml` will be resolve to the following:
+
+```yaml
+- envs:
+    SOME_ENV_KEY: some secret string
+```
 
 
 ## Development
