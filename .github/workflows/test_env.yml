@@ -2,7 +2,7 @@ on: [push]
 
 jobs:
   test_env:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     name: Test process envs
     steps:
       - uses: actions/github-script@v4
