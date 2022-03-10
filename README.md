@@ -1,3 +1,6 @@
+[![GitHub release](https://img.shields.io/github/v/release/appbaseio/pipelines-action.svg?style=for-the-badge)](https://github.com/appbaseio/pipelines-action/releases/latest)
+[![GitHub marketplace](https://img.shields.io/badge/marketplace-reactivesearch--pipelines-pink?logo=github&style=for-the-badge)](https://github.com/marketplace/actions/reactivesearch-pipelines)
+
 # About
 
 GitHub Action to manage an Appbase.io pipeline from a github repository.
@@ -20,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to deploy pipeline from the GitHub repo
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
       - name: Deploy ReactiveSearch Pipeline
         uses: appbaseio/pipelines-action
         with:
