@@ -33,5 +33,27 @@ module.exports = {
         }
 
         return value
+    },
+    extractKey: function (value) {
+        /**
+         * Extract the key from the value passed in the envs
+         * of the pipeline file.
+         * 
+         * We need to check if the value passed follows the
+         * syntax used for replacing a value with something from
+         * the envs.
+         * 
+         * If it doesn't match, we just return an empty string.
+         * If it does, we return the key.
+         * 
+         * @param {string} value - The value to find the key in
+         * 
+         * @returns {string} - String representing the extacted key or
+         * empty string for failure.
+         */
+        if (!value.match(/^\${{.*?}}$/)) return ""
+
+        // Replace the pattern with the key
+        return value.replace(/^\${{\s?(.+)\s?}}$/g, "$1")
     }
 }
