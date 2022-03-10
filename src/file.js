@@ -12,6 +12,7 @@ var fs = require("fs")
 var path = require("path")
 var yaml = require("js-yaml")
 const core = require("@actions/core")
+const env = require("../src/env")
 
 module.exports = {
     buildFormData: function (pipelineFile, dependencies, pipelineID) {
@@ -59,6 +60,8 @@ module.exports = {
 
         // Resolve env references in the `env` object
         // and write back to the file
+        core.info("Resolving envs if any")
+        this.updateFileWithEnv(pipelineFile)
 
         const form = new FormData()
 
@@ -194,6 +197,20 @@ module.exports = {
 
         // Update the ID in the doc
         yamlDoc.id = pipelineID
+
+        this.writeYaml(file, yamlDoc)
+    },
+    updateFileWithEnv: function (file) {
+        /**
+         * Update the file envs with the resolved envs and
+         * write back to the file once done.
+         * 
+         * @param {string} file - The path to the yaml file.
+         */
+        var yamlDoc = this.readYaml(file)
+
+        // Resolve the envs
+        env.resolveEnvs(yamlDoc.envs)
 
         this.writeYaml(file, yamlDoc)
     },
