@@ -84,5 +84,23 @@ module.exports = {
         })
 
         return envs
+    },
+    resolveGlobalEnvs: function (globalEnvs) {
+        /**
+         * Resolve the global envs if any are present in a special
+         * format that is supposed to be resolved automatically.
+         * 
+         * `global_envs` is an array of objects and each object will
+         * contain a few keys and values.
+         * 
+         * The value field is the one that needs to be replaced.
+         * 
+         * @param {Array.<Object>} globalEnvs - Array containing the
+         * global envs object.
+         * 
+         * @returns {Array.<Object>} - The global envs array after
+         * resolving the dependencies
+         */
+
     }
 }
