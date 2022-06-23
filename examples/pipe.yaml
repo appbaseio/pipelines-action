@@ -8,6 +8,13 @@ routes:
       acl: "search"
 envs:
   RESOLVED_KEY: ${{ TEST_KEY }}
+
+
+global_envs:
+  - key: "SOME_ENV_KEY"
+    value: ${{ TEST_KEY }}
+    label: "This is a test key as global env"
+
 stages:
   - id: "nana"
     script: "console.log('nana');"
