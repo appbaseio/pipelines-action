@@ -13991,6 +13991,8 @@ module.exports = {
          * @returns {Object} - The envs after resolving the env
          * dependencies.
          */
+        if (envs == undefined) return envs
+
         Object.keys(envs).forEach(key => {
             const passedValue = envs[key]
 
@@ -14022,6 +14024,8 @@ module.exports = {
          * @returns {Array.<Object>} - The global envs array after
          * resolving the dependencies
          */
+        if (globalEnvs == undefined) return globalEnvs
+
         globalEnvs.forEach((elementEach, index, originalEnvs) => {
             const passedValue = elementEach.value
 
