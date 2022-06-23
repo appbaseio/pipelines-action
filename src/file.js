@@ -209,8 +209,11 @@ module.exports = {
          */
         var yamlDoc = this.readYaml(file)
 
-        // Resolve the global envs
+        // Resolve the envs
         env.resolveEnvs(yamlDoc.envs)
+
+        // Resolve the global envs
+        env.resolveGlobalEnvs(yamlDoc.global_envs)
 
         // Resolve the per stage envs, if any
         yamlDoc.stages.forEach(stage => {

@@ -70,6 +70,8 @@ module.exports = {
          * @returns {Object} - The envs after resolving the env
          * dependencies.
          */
+        if (envs == undefined) return envs
+
         Object.keys(envs).forEach(key => {
             const passedValue = envs[key]
 
@@ -84,5 +86,40 @@ module.exports = {
         })
 
         return envs
+    },
+    resolveGlobalEnvs: function (globalEnvs) {
+        /**
+         * Resolve the global envs if any are present in a special
+         * format that is supposed to be resolved automatically.
+         * 
+         * `global_envs` is an array of objects and each object will
+         * contain a few keys and values.
+         * 
+         * The value field is the one that needs to be replaced.
+         * 
+         * @param {Array.<Object>} globalEnvs - Array containing the
+         * global envs object.
+         * 
+         * @returns {Array.<Object>} - The global envs array after
+         * resolving the dependencies
+         */
+        if (globalEnvs == undefined) return globalEnvs
+
+        globalEnvs.forEach((elementEach, index, originalEnvs) => {
+            const passedValue = elementEach.value
+
+            const extractedKey = this.extractKey(passedValue)
+            if (!extractedKey) return
+
+            // if extractedKey is found, get the env value
+            // NOTE: Following call will fail if the env key
+            // is not present.
+            const resolvedValue = this.getEnv(extractedKey)
+
+            // Update the value in the original array
+            originalEnvs[index]["value"] = resolvedValue
+        })
+
+        return globalEnvs
     }
 }
